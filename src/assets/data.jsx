@@ -5,7 +5,7 @@ import logo from '../assets/images/app_logo.png'
 import { initializeApp } from 'firebase/app';
 import { getAuth, signInWithPopup, GoogleAuthProvider , signOut } from "firebase/auth";
 import axios from "axios";
-
+// 1j1qXOYmyDjFHZ01VvocoRlBV4Nzb4aLenRjyTAUNc90
 
  const firebaseConfig = {
   apiKey: "AIzaSyD8yYba6Z_DpycbSF95Po9PqoDBSnYKrWE",

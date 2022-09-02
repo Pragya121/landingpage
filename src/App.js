@@ -1,5 +1,7 @@
 import "./App.css";
+import { useEffect } from "react";
 import Loading from "./components/Loading";
+import { Sapling } from "@saplingai/sapling-js/observer";
 import data from "./assets/data";
 import React from "react";
 import Navbar from "./components/Navbar";
@@ -15,7 +17,7 @@ function App() {
       ? JSON.parse(localStorage.getItem("token"))
       : {}
   );
-  const [para, setPara] = React.useState("Text....")
+  const [para, setPara] = React.useState("Text....");
   const role = user ? user.role : null;
   const [token, setToken] = React.useState(
     localStorage.getItem("token")
@@ -26,8 +28,10 @@ function App() {
   let keyValues = window.location.search;
   const urlParams = new URLSearchParams(keyValues);
   let docId = urlParams.get("docId");
-  console.log("Keys and values", keyValues);
- 
+  // console.log("Keys and values", keyValues);
+  function truncate(str, n){
+    return (str.length > n) ? str.slice(0, n-1) + '&hellip;' : str;
+  };
   const signOut = (e) => {
     setIsLoading(true);
     setIsSignedout(true);
@@ -61,10 +65,10 @@ function App() {
         },
       };
       if (!docId) {
-        
-      
-        docId = prompt("Please enter the doc ID", "Doc id 218392839");
-       
+        docId = prompt(
+          "Please enter the doc ID",
+          "1j1qXOYmyDjFHZ01VvocoRlBV4Nzb4aLenRjyTAUNc90"
+        );
       }
       const response = await data.axios.get(
         `${data.BASE_URL}/googleDocAnalyser?docId=${docId}`,
@@ -76,8 +80,6 @@ function App() {
       console.log(`info`, resp);
       setPara(resp);
       setIsLoading(false);
-      
-    
 
       return resp;
     } catch (errors) {
@@ -88,10 +90,19 @@ function App() {
     }
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!isSignedout && token) {
       getDocInfo();
     }
+    // 1j1qXOYmyDjFHZ01VvocoRlBV4Nzb4aLenRjyTAUNc90 doc id
+setPara(truncate(para,20));
+    Sapling.init({
+      key: "MI52JDK7WA6CKCAW1JBIT96LW5MOGJAX",
+      endpointHostname: "https://api.sapling.ai",
+      editPathname: "/api/v1/edits",
+      statusBadge: true,
+      mode: "dev",
+    });
   }, []);
 
   if (token) {
@@ -102,9 +113,32 @@ function App() {
 
           <div className="body">
             {" "}
+            {/* <div id="editor" sapling-ignore="true" contentEditable="true">
+              Lets get started!
+            </div> */}
             <p>
-              <textarea defaultValue={para} rows={15} readOnly></textarea>
+              <textarea
+                id="editor"
+                // defaultValue={para}
+                rows={15}
+              >{para}</textarea>
             </p>
+            <button
+              onClick={(e) => {
+                const editor = document.getElementById("editor");
+                Sapling.observe(editor);
+              }}
+            >
+              Check
+            </button>
+            {/* <button
+              onClick={(e) => {
+                const editor = document.getElementById("editor");
+                Sapling.unobserve(editor);
+              }}
+            >
+             Stop
+            </button> */}
           </div>
           <Footer />
         </div>
